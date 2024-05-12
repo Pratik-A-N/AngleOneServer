@@ -14,6 +14,11 @@ token = "PV5G2HDOHFASFDP5TURQQLA664"
 # Create your views here.
 @api_view(['POST'])
 def getLTP(request):
+    body = request.data
+    exchange = body["exchange"]
+    symbolToken = body["symbolToken"]
+    tradingSymbol = body["tradingSymbol"]
+    
     totp = pyotp.TOTP(token).now()
     smartApi = SmartConnect(api_key)
     try:
@@ -27,9 +32,9 @@ def getLTP(request):
             # logger.info(f"You Credentials: {data}")
             authToken = data['data']['jwtToken']
             refreshToken = data['data']['refreshToken']
-            print(authToken)
-            print(refreshToken)
-        data = smartApi.ltpData("NSE","Nifty Media","99926031")
+            # print(authToken)
+            # print(refreshToken)
+        data = smartApi.ltpData(exchange,symbolToken,tradingSymbol)
         return Response(data)
     except Exception as e:
         return Response("Invalid Token: The provided token is not valid.")
